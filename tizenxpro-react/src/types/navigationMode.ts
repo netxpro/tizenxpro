@@ -1,0 +1,1 @@
+export type NavigationMode = "sidebar" | "content" | "player" | "popup";

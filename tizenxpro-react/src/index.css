@@ -1,0 +1,233 @@
+@import "tw-animate-css";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.dark {
+  --background: #23272f;
+  --foreground: #fff;
+  --card: #353a4a;
+  --card-foreground: #fff;
+  --popover: #353a4a;
+  --popover-foreground: #fff;
+  --primary: #dfdfdf;
+  --primary-foreground: #353a4a;
+  --secondary: #454545;
+  --secondary-foreground: #fff;
+  --muted: #454545;
+  --muted-foreground: #b4b4b4;
+  --accent: #454545;
+  --accent-foreground: #fff;
+  --destructive: #e57373;
+  --border: #ffffff1a;
+  --input: #ffffff26;
+  --ring: #8a8a8a;
+  --chart-1: #7c5fff;
+  --chart-2: #b3ffb3;
+  --chart-3: #ffe28f;
+  --chart-4: #7c5fff;
+  --chart-5: #ffd18f;
+  --sidebar: #353a4a;
+  --sidebar-foreground: #fff;
+  --sidebar-primary: #7c5fff;
+  --sidebar-primary-foreground: #fff;
+  --sidebar-accent: #454545;
+  --sidebar-accent-foreground: #fff;
+  --sidebar-border: #ffffff1a;
+  --sidebar-ring: #8a8a8a;
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+  background: var(--primary);
+  color: var(--primary-foreground);
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s;
+  min-width: 40px;
+  min-height: 40px;
+}
+.btn-ghost {
+  background: rgba(0,0,0,0.6);
+  color: #fafafa;
+}
+.btn-ghost:hover, .btn-ghost:focus {
+  background: rgba(0,0,0,0.8);
+}
+
+/* Card */
+.card {
+  background: #fff;
+  color: #23272f;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  border: 1px solid #ebebeb;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  overflow: hidden;
+}
+
+/* Progressbar */
+.progress {
+  width: 100%;
+  height: 8px;
+  background: #ebebeb;
+  border-radius: 4px;
+  overflow: hidden;
+  margin: 0 1rem;
+  position: relative;
+}
+.progress-bar {
+  height: 100%;
+  background: #353a4a;
+  width: 0%;
+  transition: width 0.2s;
+}
+
+/* Sidebar */
+.sidebar {
+  background: #fafafa;
+  color: #23272f;
+  padding: 1rem;
+  border-right: 1px solid #ebebeb;
+}
+
+/* Fokus */
+.focused, [tabindex="0"]:focus {
+  outline: 2px solid #38bdf8 !important;
+  outline-offset: 2px;
+  border-radius: 8px;
+  background: #222c3a !important;
+  color: #fafafa !important;
+}
+
+/* Animationen */
+@keyframes fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+.fade-in {
+  animation: fade-in 0.3s;
+}
+
+/* Dialog/Popup */
+.dialog {
+  background: #fff;
+  color: #23272f;
+  border-radius: 12px;
+  box-shadow: 0 4px 32px rgba(0,0,0,0.2);
+  padding: 2rem;
+  max-width: 90vw;
+  max-height: 90vh;
+  margin: auto;
+  position: fixed;
+  left: 0; right: 0; top: 0; bottom: 0;
+  z-index: 1000;
+}
+
+/* Overlay */
+.overlay {
+  position: fixed;
+  left:0; top:0; right:0; bottom:0;
+  background: rgba(0,0,0,0.5);
+  z-index: 999;
+}
+
+/* Badge */
+.badge {
+  display: inline-block;
+  background: #353a4a;
+  color: #fafafa;
+  border-radius: 6px;
+  padding: 0.2em 0.6em;
+  font-size: 0.85em;
+  margin-left: 0.5em;
+}
+
+/* Responsive Grid für Cards */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+  /* background-color: #353a4a; */
+}
+
+@layer base {
+  * {
+    border-color: var(--border);
+    outline-color: var(--ring);
+  }
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+  }
+}
+
+.alertdialog{
+    display: block;
+    background: #222c3a;
+}
+
+/* Sichtbarer Fokus für alle Fokus-Elemente */
+.focused,
+[data-focusable][tabindex="0"]:focus,
+[data-focusable-content][tabindex="0"]:focus,
+[data-focusable-sidebar][tabindex="0"]:focus,
+[data-focusable-popup][tabindex="0"]:focus {
+  outline: 2px solid #38bdf8 !important;
+  outline-offset: 2px;
+  z-index: 10;
+  border-radius: 0.5rem;
+  box-shadow: 0 0 0 4px #38bdf880;
+  /* background: #222c3a !important; */
+  transition: outline 0.1s, box-shadow 0.1s, background 0.1s;
+}
+
+.text-orange-500 {
+  color: orange !important;
+}
+.bg-orange-50 {
+  /* background: #fff7ed !important; */
+}
