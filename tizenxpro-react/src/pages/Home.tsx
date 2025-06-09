@@ -33,7 +33,7 @@ export default function Home({ setting, platform }: { setting: string, platform:
   const API_BASE = getApiUrl();
   const gridRef = useRef<HTMLDivElement>(null);
 
-  // Hilfsfunktion für Daten
+
   const handleData = (data: any) => {
     if (Array.isArray(data)) return data;
     if (Array.isArray(data.results)) return data.results;
@@ -49,9 +49,8 @@ export default function Home({ setting, platform }: { setting: string, platform:
     return [];
   };
 
-  // Featured: alles auf einmal, lokal paginieren
+
   useEffect(() => {
-    // featuredVideos = [];
     if (!category && !query) {
       setLoading(true);
       axios
@@ -67,13 +66,13 @@ export default function Home({ setting, platform }: { setting: string, platform:
       setPage(1);
       return;
     }
-    // Bei Search/Kategorie: immer nur Seite 1 initial laden
+
     setVideos([]);
     setPage(1);
     setHasMore(true);
   }, [category, query, setting, platform]);
 
-  // Search/Kategorie: Seite laden
+
   useEffect(() => {
     if (!category && !query) return;
     setLoading(true);
@@ -83,24 +82,23 @@ export default function Home({ setting, platform }: { setting: string, platform:
     axios.get(url)
       .then(({ data }) => {
         setVideos(handleData(data));
-        setLocalPage(1); // immer auf Anfang der neuen API-Page
+        setLocalPage(1);
         setTotalPages(data.totalPages || 1);
       })
       .finally(() => setLoading(false));
   }, [category, query, apiPage, setting, platform]);
 
-  // "Load More" Funktion für Search/Kategorie
+
   const loadMore = () => {
     if (pagedVideos.length < videos.length) {
       setLocalPage(lp => lp + 1);
     } else if (apiPage < totalPages) {
       setIsFetchingMore(true);
       setApiPage(ap => ap + 1);
-      setTimeout(() => setIsFetchingMore(false), 500); // Beispiel: nach 500ms zurücksetzen
+      setTimeout(() => setIsFetchingMore(false), 500);
     }
   };
 
-  // Automatisches "Load More" beim Scrollen ans Ende (nur Search/Kategorie)
   useEffect(() => {
     if (!category && !query) return;
     const handleScroll = () => {
@@ -112,10 +110,9 @@ export default function Home({ setting, platform }: { setting: string, platform:
     };
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-    // eslint-disable-next-line
   }, [category, query, page, hasMore, isFetchingMore]);
 
-  // Keydown für Pfeiltaste nach unten auf letzter Card (nur Search/Kategorie)
+
   useEffect(() => {
     if (!category && !query) return;
     const handler = (e: KeyboardEvent) => {
@@ -130,10 +127,9 @@ export default function Home({ setting, platform }: { setting: string, platform:
     };
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
-    // eslint-disable-next-line
   }, [videos, hasMore, isFetchingMore, category, query]);
 
-  // Für Featured: lokal paginieren
+
   const pagedVideos = videos.slice(0, localPage * pageSize);
   const featuredPagedVideos = videos.slice((page - 1) * pageSize, page * pageSize);
 
@@ -169,7 +165,7 @@ export default function Home({ setting, platform }: { setting: string, platform:
           Array.from({ length: pageSize }).map((_, i) => <VideoCardSkeleton key={i} />)
         ) : pagedVideos.length === 0 ? (
           <div className="col-span-4 text-center text-muted-foreground py-12">
-            Keine Videos gefunden.
+            KNo videos found.
           </div>
         ) : (
           <Suspense fallback={null}>
@@ -184,7 +180,7 @@ export default function Home({ setting, platform }: { setting: string, platform:
             {(category || query) && hasMore && (
               <div className="col-span-full flex justify-center py-4">
                 {isFetchingMore ? (
-                  <span className="text-muted-foreground">Lade mehr…</span>
+                  <span className="text-muted-foreground">Navigate down to load more</span>
                 ) : (
                   <button
                     className="px-4 py-2 rounded bg-muted text-muted-foreground"
@@ -198,7 +194,7 @@ export default function Home({ setting, platform }: { setting: string, platform:
           </Suspense>
         )}
       </div>
-      {/* Pagination für Featured */}
+      {/* Pagination */}
       {!category && !query && (
         <Pagination className="mt-8">
           <PaginationContent>
@@ -261,20 +257,20 @@ export default function Home({ setting, platform }: { setting: string, platform:
         </Pagination>
       )}
 
-      {/* Search/Kategorie: "Mehr laden" und Pagination */}
+      {/* "load more" Pagination */}
       {(category || query) && (
         <>
-          {/* "Mehr laden" nur anzeigen, wenn es noch mehr Videos in der aktuellen API-Page gibt */}
+          {/* "load more" */}
           {pagedVideos.length < videos.length && (
             <div className="col-span-full flex justify-center py-4">
               {isFetchingMore ? (
-                <span className="text-muted-foreground">Lade mehr…</span>
+                <span className="text-muted-foreground">Navigate down to load more</span>
               ) : (
                 <button
                   className="px-4 py-2 rounded bg-muted text-muted-foreground"
                   onClick={loadMore}
                 >
-                  Mehr laden
+                  Load more
                 </button>
               )}
             </div>
