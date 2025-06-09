@@ -24,7 +24,7 @@ if exist ".buildResult" (
 
 REM Run tizen build-web with exclusions in new window, close after done
 echo Starting tizen build-web ...
-start /wait cmd /c "tizen build-web -e ".*" -e "*.bat" -e "gulpfile.babel.js" -e "README.md" -e "node_modules/*" -e "package*.json" -e "yarn.lock" -e "www/*""
+start /wait cmd /c "tizen build-web -e ".*" -e "*.bat" -e "gulpfile.babel.js" -e "tizenxpro-react/*" -e "README.md" -e "node_modules/*" -e "package*.json" -e "yarn.lock" -e "www/*""
 if errorlevel 1 (
     echo Error during tizen build-web.
     echo Press any key to exit...
