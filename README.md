@@ -1,11 +1,20 @@
 # 📺 XPRO – TizenxPro for Samsung Smart TV
 
-**XPRO** is a full-stack web app designed specifically for **Samsung Smart TVs (Tizen OS)**.  
-Built with **React (Vite)** for the frontend, a standalone **Node.js backend**, and a custom toolchain for building & deploying `.wgt` Tizen apps.
+**XPRO** is a full-stack web app specifically built for **Samsung Smart TVs (Tizen OS)**.  
+It uses **React (Vite)** for the frontend, a standalone **Node.js backend**, and a custom toolchain to build and install `.wgt` Tizen apps.
 
-> 📡 XPRO lets you explore and stream adult-oriented video content from popular sources like **xHamster**, directly on your Smart TV – no PC or browser needed.
-> 🛠️ Tailored for TV remote control, XPRO features a fullscreen video player, focus navigation, and platform filtering.
+> With XPRO, you can browse and stream adult-oriented video content from popular sources like **xHamster**, directly on your Smart TV – no PC or browser required.  
+> ⚠️ **Note:** The **Node.js server must be running** in the background on a device such as a **Raspberry Pi**, **Proxmox VM**, or similar. The app will not function without it.
 
+---
+
+## ⚠️ Alpha Notice – Still in Development
+
+XPRO is currently in **alpha**. While core features are implemented and the app runs on supported Samsung Smart TVs, it is still under **active development**.
+
+We recommend **following the GitHub repository** to stay up to date, as frequent improvements and updates are being pushed.
+
+Your feedback is appreciated and helps shape the final product.
 ---
 
 ![XPRO Logo](./logo.png)
