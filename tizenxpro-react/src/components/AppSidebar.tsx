@@ -77,18 +77,16 @@ export function AppSidebar({
                   type="button"
                   data-focusable-sidebar
                   tabIndex={0}
+                  style={{ paddingBottom: "1.2rem" }}
                   onClick={() => onSearchClick?.()}
-                  className={`flex items-center px-4 py-2 rounded-md transition-colors
+                  className={`flex items-center px-6 py-4 rounded-xl transition-colors
                     ${active ? "text-orange-500 font-bold bg-orange-50" : "hover:bg-muted"}
                   `}
                   aria-label="Open search"
                 >
-                  <item.icon className={`w-7 h-7 `} />
-                  <span className="text-lg font-semibold ml-2">
+                  <item.icon className="w-20 h-20" style={{ width: 24, height: 24, paddingTop: 2 }} />
+                  <span className="text-2xl font-semibold">
                     {item.title}
-                    {/* {item.isSearch && currentQuery && (
-                      <span className="ml-2 text-orange-500">"{currentQuery}"</span>
-                    )} */}
                   </span>
                 </button>
               ) : (
@@ -96,6 +94,7 @@ export function AppSidebar({
                   data-focusable-sidebar
                   tabIndex={0}
                   href={item.url}
+                  style={{ paddingBottom: "1.2rem" }}
                   aria-current={active ? "page" : undefined}
                   onClick={e => {
                     e.preventDefault();
@@ -104,12 +103,12 @@ export function AppSidebar({
                       navigate(item.url);
                     }
                   }}
-                  className={`flex items-center px-4 py-2 rounded-md transition-colors
+                  className={`flex items-center px-6 py-4 rounded-xl transition-colors
                     ${active ? "text-orange-500 font-bold bg-orange-50" : "hover:bg-muted"}
                   `}
                 >
-                  <item.icon className={`w-7 h-7 ${active ? "text-orange-500" : ""}`} />
-                  <span className="text-lg font-semibold ml-2">
+                  <item.icon className={`w-20 h-20 ${active ? "text-orange-500" : ""}`} style={{ width: 24, height: 24, paddingTop: 2 }} />
+                  <span className="text-2xl font-semibold">
                     {item.title === "Home" ? homeTitle : item.title}
                     {item.title === "Category" && categoryLabel && (
                       <span className="ml-2 text-orange-500">"{categoryLabel}"</span>

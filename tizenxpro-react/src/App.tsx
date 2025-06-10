@@ -67,7 +67,7 @@ export default function App() {
       <div className="flex flex-col h-screen w-screen">
         {/* Navbar oben */}
         <SidebarProvider>
-          <nav className="w-full flex flex-row items-center border-b bg-card px-4 py-2">
+          <nav className="w-full flex flex-row items-center border-b bg-card px-4 py-3">
             <AppSidebar
               activePath={activePath}
               onSelect={setActivePath}
