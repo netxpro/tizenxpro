@@ -18,6 +18,14 @@ export default function VideoCard({ video }: { video: Video }) {
     navigate(`/player/${video.id}`, { state: { video } });
   };
 
+  function formatViews(views?: string) {
+    if (!views) return "";
+    if (/^\d+$/.test(views)) {
+      return Number(views).toLocaleString("en-US") + " views";
+    }
+    return views;
+  }
+
   return (
     <div
       className="video-card-minimal w-full border border-border bg-card text-card-foreground shadow-sm flex flex-col gap-0 rounded-lg py-0 h-auto cursor-pointer focus:outline-2 focus:outline-sky-400"
@@ -39,7 +47,7 @@ export default function VideoCard({ video }: { video: Video }) {
           loading="lazy"
           style={{
             width: "100%",
-            height: 144,
+            height: 160,
             objectFit: "cover",
             borderTopLeftRadius: 12,
             borderTopRightRadius: 12,
@@ -107,7 +115,7 @@ export default function VideoCard({ video }: { video: Video }) {
                 fontSize: 16,
               }}
             >
-              {video.views}
+              {formatViews(video.views)}
             </span>
           )}
         </div>

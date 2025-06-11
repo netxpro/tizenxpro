@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
-import type { Platform, SettingsProps } from "@/types/settings";
-import { settingOptions } from "@/types/settings"; // hier importieren
 import { getApiUrl } from "@/utils/apiUrl";
+import type { UserSettings } from "@/types/userSettings";
 
-export default function Settings({ setting, setSetting, platform, setPlatform }: SettingsProps) {
-  const [platforms, setPlatforms] = useState<Platform[]>([]);
-  const defaultApiUrl = import.meta.env.VITE_API_BASE;
+export default function Settings({ settings, setSettings }: {
+  settings: UserSettings;
+  setSettings: (s: UserSettings) => void;
+}) {
+  const [platforms, setPlatforms] = useState<any[]>([]);
   const [apiUrl, setApiUrl] = useState(getApiUrl());
   const API_BASE = getApiUrl() + "/platforms";
   const [showApiDialog, setShowApiDialog] = useState(false);
@@ -14,57 +15,50 @@ export default function Settings({ setting, setSetting, platform, setPlatform }:
   useEffect(() => {
     fetch(API_BASE)
       .then(res => res.json())
-      .then(setPlatforms);
+      .then(data => setPlatforms(data));
   }, []);
+
+  const currentPlatform = platforms.find((p: any) => p.id === settings.platform);
+  const orientationOptions = currentPlatform?.settings?.orientation ?? [];
+
+  const orientationLabel: Record<string, string> = {
+    straight: "Straight",
+    gay: "Gay",
+    shemale: "Transgender",
+  };
+  const orientationIcon: Record<string, string> = {
+    straight: "♀️‍♂️",
+    gay: "♂️♂️",
+    shemale: "⚧️",
+  };
 
   const handleApiSave = () => {
     let url = apiInput.trim();
     if (url.toLowerCase() === "nx") {
-      url = defaultApiUrl;
+      url = import.meta.env.VITE_API_BASE;
     } else {
-      // /api anhängen, wenn nicht vorhanden
       if (!url.endsWith("/api")) url = url.replace(/\/+$/, "") + "/api";
     }
     setApiUrl(url);
     localStorage.setItem("apiUrl", url);
     setShowApiDialog(false);
-    window.location.reload(); // App neu laden, damit überall die neue URL gilt
+    window.location.reload();
   };
 
   return (
     <div className="p-8 max-w-xl mx-auto">
-      <h2 className="text-2xl font-bold mb-4">Settings</h2>
 
-      <label className="block mb-2 font-semibold">Orientation</label>
-      <div className="flex gap-4 mb-6">
-        {settingOptions.map(opt => (
-          <button
-            key={opt.value}
-            className={`px-4 py-2 rounded font-medium border flex items-center gap-2
-              ${setting === opt.value
-                ? `bg-orange-500 text-white border-transparent`
-                : "text-gray-700 bg-gray-200 border-gray-300 hover:bg-gray-300"}`}
-            onClick={() => setSetting(opt.value)}
-            tabIndex={0}
-            data-focusable-content
-            type="button"
-          >
-            <span>{opt.icon}</span>
-            {opt.label}
-          </button>
-        ))}
-      </div>
-
-      <label className="block mb-2 font-semibold">Platform</label>
+      {/* Plattform */}
+      <h2 className="text-2xl font-bold mb-4">Platform</h2>
       <div className="flex gap-4 flex-wrap">
         {platforms.map(opt => (
           <button
             key={opt.id}
             className={`px-4 py-2 rounded font-medium border
-              ${platform === opt.id
+              ${settings.platform === opt.id
                 ? "bg-orange-500 text-white border-transparent"
                 : "text-gray-700 bg-gray-200 border-gray-300 hover:bg-gray-300"}`}
-            onClick={() => setPlatform(opt.id)}
+            onClick={() => setSettings({ ...settings, platform: opt.id })}
             tabIndex={0}
             data-focusable-content
             type="button"
@@ -74,6 +68,31 @@ export default function Settings({ setting, setSetting, platform, setPlatform }:
           </button>
         ))}
       </div>
+      <br />
+      {/* Orientation */}
+      {Array.isArray(orientationOptions) && orientationOptions.length > 0 && (
+        <>
+          <h2 className="text-2xl font-bold mb-4">Orientation</h2>
+          <div className="flex gap-4 mb-6">
+            {orientationOptions.map(opt => (
+              <button
+                key={opt}
+                className={`px-4 py-2 rounded font-medium border flex items-center gap-2
+                  ${settings.orientation === opt
+                    ? `bg-orange-500 text-white border-transparent`
+                    : "text-gray-700 bg-gray-200 border-gray-300 hover:bg-gray-300"}`}
+                onClick={() => setSettings({ ...settings, orientation: opt })}
+                tabIndex={0}
+                data-focusable-content
+                type="button"
+              >
+                <span>{orientationIcon[opt] || ""}</span>
+                {orientationLabel[opt] || opt}
+              </button>
+            ))}
+          </div>
+        </>
+      )}
 
       <div className="mt-8 text-center">
         <div className="mb-2 text-sm text-gray-500">
@@ -121,7 +140,7 @@ export default function Settings({ setting, setSetting, platform, setPlatform }:
               </button>
             </div>
             <div className="text-xs text-gray-400 mt-2">
-              Type <b>nx</b> to reset to default ({defaultApiUrl})
+              Type <b>nx</b> to reset to default ({import.meta.env.VITE_API_BASE})
             </div>
           </div>
         </div>

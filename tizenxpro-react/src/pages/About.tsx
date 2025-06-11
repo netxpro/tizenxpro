@@ -18,7 +18,7 @@ export default function About() {
   const [deviceInfo, setDeviceInfo] = useState<any>(null);
 
   useEffect(() => {
-    // Infos from tizen.js
+    // Info from tizen.js
     if (window.NativeShell?.AppHost) {
       setDeviceInfo({
         appName: window.NativeShell.AppHost.appName(),
@@ -51,7 +51,7 @@ export default function About() {
             </div>
           </>
         ) : (
-          <div className="text-gray-400">No Tizen device info available.</div>
+          <div className="text-gray-400 text-center">No Tizen device info available.</div>
         )}
       </div>
       <div className="mt-6">
@@ -63,6 +63,7 @@ export default function About() {
         >
           Open Source on GitHub
         </a>
+        <img src="/img/qr-code.png" alt="QR Code" className="mx-auto mb-6 w-48" />
       </div>
       <div className="text-xs text-gray-400 mt-8">Made with ❤️ by propani.</div>
     </div>

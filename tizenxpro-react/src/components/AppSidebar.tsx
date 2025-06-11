@@ -4,6 +4,7 @@ import {
 import { Home, Layers, Settings, Search, Info } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { getApiUrl } from "@/utils/apiUrl";
 
 const items = [
   { title: "Home", url: "/", icon: Home },
@@ -19,12 +20,14 @@ export function AppSidebar({
   onSearchClick,
   mode,
   searchOpen,
+  settings,
 }: {
   activePath: string,
   onSelect: (url: string) => void,
   onSearchClick?: () => void,
   mode: string,
   searchOpen: boolean,
+  settings: { platform: string; orientation?: string },
 }) {
   const navigate = useNavigate();
   const location = useLocation();
@@ -35,9 +38,11 @@ export function AppSidebar({
 
   useEffect(() => {
     if (currentCategory) {
-      fetch("/data/categories.json")
+      const API_BASE = getApiUrl();
+      fetch(`${API_BASE}/${settings.platform}/categories`)
         .then(res => res.json())
-        .then((cats) => {
+        .then((data) => {
+          const cats = Array.isArray(data.categories) ? data.categories : [];
           const found = cats.find((cat: any) => cat.name === currentCategory);
           setCategoryLabel(found ? found.name : currentCategory);
         })
@@ -45,9 +50,8 @@ export function AppSidebar({
     } else {
       setCategoryLabel(null);
     }
-  }, [currentCategory]);
+  }, [currentCategory, settings.platform]);
 
-  // Hilfsfunktion: Ist das Item aktiv?
   const isActive = (item: typeof items[0]) => {
     if (item.isSearch) return (searchOpen && mode === "popup") || (!!currentQuery && mode === "content");
     if (item.url === "/") return (activePath === "/" || activePath === "") && mode === "content";
@@ -59,13 +63,10 @@ export function AppSidebar({
       {items.map((item) => {
         const active = isActive(item);
 
-        // Dynamischer Titel für Home
         let homeTitle = "Home";
         if (item.title === "Home") {
           if (currentQuery) {
             homeTitle = `searched for "${currentQuery}"`;
-          } else if (categoryLabel) {
-            // homeTitle = `Home – category "${categoryLabel}"`;
           }
         }
 
@@ -98,7 +99,12 @@ export function AppSidebar({
                   aria-current={active ? "page" : undefined}
                   onClick={e => {
                     e.preventDefault();
-                    if (item.url) {
+                    if (item.url === "/categories" && currentCategory) {
+                      const orientation = settings.orientation || "";
+                      navigate(
+                        `/category?name=${encodeURIComponent(currentCategory)}&orientation=${encodeURIComponent(orientation)}&page=1`
+                      );
+                    } else if (item.url) {
                       onSelect(item.url);
                       navigate(item.url);
                     }

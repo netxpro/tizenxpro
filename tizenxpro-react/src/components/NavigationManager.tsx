@@ -24,7 +24,6 @@ export function NavigationManager({
   const location = useLocation();
   const navigate = useNavigate();
 
-  // Fokussiert ein Element in einer Liste anhand eines Index
   const focusElement = (elements: HTMLElement[], index: number) => {
     if (!elements.length) return 0;
     const safeIndex = Math.max(0, Math.min(index, elements.length - 1));
@@ -43,7 +42,7 @@ export function NavigationManager({
 
       if (isInput && !navKeys.includes(e.key)) return;
 
-      // Unterstütze Tizen Back-Taste (z. B. Fernbedienung oder Tastatur Escape/Backspace)
+      // Tizen Back-keycode
       const isSamsungBack =
         e.key === "BrowserBack" ||
         e.key === "Backspace" ||
@@ -206,7 +205,6 @@ export function NavigationManager({
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [mode, focusIndex, setFocusIndex, setMode, lastSidebarIndex, setLastSidebarIndex, setShowExitPrompt, navigate]);
 
-  // Fokussiere korrektes Element nach Seiten- oder Moduswechsel
   useEffect(() => {
     document.querySelectorAll(".focused").forEach(el => el.classList.remove("focused"));
 

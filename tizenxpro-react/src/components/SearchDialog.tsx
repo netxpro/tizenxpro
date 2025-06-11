@@ -3,7 +3,6 @@ import {
   AlertDialogContent,
   AlertDialogFooter,
   AlertDialogCancel,
-  // AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -35,7 +34,6 @@ export function SearchDialog({ open, onClose }: { open: boolean; onClose: () => 
   return (
     <AlertDialog open={open}>
       <AlertDialogContent>
-        {/* <AlertDialogTitle>Search</AlertDialogTitle> */}
         <Input
           ref={inputRef}
           autoFocus

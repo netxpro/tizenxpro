@@ -6,32 +6,34 @@ import { Progress } from "@/components/ui/progress";
 import { Play, Pause } from "lucide-react";
 import type { NavigationMode } from "@/types/navigationMode";
 import { getApiUrl } from "@/utils/apiUrl";
+import Hls from "hls.js";
+import type { UserSettings } from "@/types/userSettings";
 
 const API_BASE = getApiUrl();
 
 export default function PlayerView({
+  settings,
   setMode,
 }: {
+  settings: UserSettings;
   setMode?: (mode: NavigationMode) => void;
 }) {
+  const platform = settings.platform;
+
   const videoRef = useRef<HTMLVideoElement>(null);
   const { id } = useParams();
   const location = useLocation();
-  // const navigate = useNavigate();
   const [video, setVideo] = useState<any>(null);
   const [videoSrc, setVideoSrc] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [showControls, setShowControls] = useState(false); // Startet auf false!
+  const [showControls, setShowControls] = useState(false);
 
-  // Player UI State
   const [isPlaying, setIsPlaying] = useState(true);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
 
-  // const controlsTimeout = useRef<NodeJS.Timeout | null>(null);
   const playerWrapperRef = useRef<HTMLDivElement>(null);
 
-  // Video laden (wie gehabt)
   useEffect(() => {
     const loadVideo = async () => {
       setIsLoading(true);
@@ -44,14 +46,14 @@ export default function PlayerView({
           return;
         }
         setVideo(passedVideo);
-        const res = await axios.get(`${API_BASE}/xhamster/vidurl`, {
+        const res = await axios.get(`${API_BASE}/${platform}/vidurl`, { 
           params: { url: passedVideo.url },
         });
         const directUrl = res.data?.directUrl;
         if (!directUrl) {
           setVideoSrc(null);
         } else {
-          const finalUrl = `${API_BASE}/xhamster/proxy?url=${encodeURIComponent(directUrl)}`;
+          const finalUrl = `${API_BASE}/${platform}/proxy?url=${encodeURIComponent(directUrl)}`; 
           setVideoSrc(finalUrl);
         }
       } catch (err) {
@@ -63,7 +65,6 @@ export default function PlayerView({
     loadVideo();
   }, [id, location.state]);
 
-  // Player Events
   useEffect(() => {
     const videoEl = videoRef.current;
     if (!videoEl) return;
@@ -80,14 +81,12 @@ export default function PlayerView({
     };
   }, [videoSrc, videoRef]);
 
-  // Controls automatisch ausblenden (5 Sekunden)
   useEffect(() => {
     if (!showControls) return;
     const timeout = setTimeout(() => setShowControls(false), 5000);
     return () => clearTimeout(timeout);
   }, [showControls]);
 
-  // Controls bei Maus/Klick immer wieder einblenden
   useEffect(() => {
     const show = () => setShowControls(true);
     window.addEventListener("mousemove", show);
@@ -98,7 +97,6 @@ export default function PlayerView({
     };
   }, [setShowControls]);
 
-  // Fullscreen beim Mount
   useEffect(() => {
     if (playerWrapperRef.current && document.fullscreenElement !== playerWrapperRef.current) {
       playerWrapperRef.current.requestFullscreen?.();
@@ -139,11 +137,44 @@ export default function PlayerView({
     };
   }, []);
 
+  useEffect(() => {
+    if (!videoSrc || !videoRef.current) return;
+
+    const video = videoRef.current;
+
+    // Prüfe, ob es ein m3u8 ist
+    if (videoSrc.endsWith(".m3u8")) {
+      if (Hls.isSupported()) {
+        const hls = new Hls({
+          maxBufferLength: 30,
+          maxMaxBufferLength: 60,
+          liveSyncDuration: 10,
+          enableWorker: true,
+        });
+        hls.loadSource(videoSrc);
+        hls.attachMedia(video);
+
+        hls.on(Hls.Events.ERROR, (event, data) => {
+          console.error("HLS error:", data);
+        });
+
+        // Clean up
+        return () => {
+          hls.destroy();
+        };
+      } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
+        video.src = videoSrc;
+      }
+    } else {
+      video.src = videoSrc;
+    }
+  }, [videoSrc]);
+
   if (!video) {
-    return <div className="fixed inset-0 z-50 flex items-center justify-center bg-black text-white">❌ Video nicht gefunden</div>;
+    return <div className="fixed inset-0 z-50 flex items-center justify-center bg-black text-white">❌ Video not found</div>;
   }
   if (isLoading || !videoSrc) {
-    return <div className="fixed inset-0 z-50 flex items-center justify-center bg-black text-white">⏳ Video wird geladen...</div>;
+    return <div className="fixed inset-0 z-50 flex items-center justify-center bg-black text-white">⏳ Video is loading...</div>;
   }
 
   return (
@@ -154,7 +185,7 @@ export default function PlayerView({
       onMouseMove={() => setShowControls(true)}
       onClick={() => setShowControls(true)}
     >
-      {/* Zurück-Button und Titel */}
+      {/* back-Button */}
       {showControls && (
         <>
           {/* <Button
@@ -162,7 +193,7 @@ export default function PlayerView({
             variant="ghost"
             className="absolute top-4 left-4 z-60 bg-black/60 hover:bg-black/80 rounded-full p-2 focus:outline-none"
             onClick={() => navigate(-1)}
-            aria-label="Zurück"
+            aria-label="back"
             tabIndex={0}
             data-focusable-player
           >
@@ -185,10 +216,10 @@ export default function PlayerView({
         onPause={() => setIsPlaying(false)}
       />
 
-      {/* Eigene Controls */}
+      {/* Controls */}
       {showControls && (
         <div className="absolute bottom-0 left-0 w-full flex flex-col items-center pb-8 pt-24 transition-opacity duration-300">
-          {/* Progressbar mit Zeit */}
+          {/* Progressbar */}
           <div className="flex items-center w-full max-w-3xl px-4 mb-4">
             <span className="text-sm font-mono w-14 text-right">{formatTime(currentTime)}</span>
             <Progress

@@ -5,7 +5,6 @@ import {
   AlertDialogCancel,
   AlertDialogAction,
   AlertDialogTitle,
-  // AlertDialogDescription,
 } from "@/components/ui/alert-dialog";
 
 export function ExitDialog({ open, onCancel, onExit }: { open: boolean; onCancel: () => void; onExit: () => void }) {
@@ -13,9 +12,6 @@ export function ExitDialog({ open, onCancel, onExit }: { open: boolean; onCancel
     <AlertDialog open={open}>
       <AlertDialogContent>
         <AlertDialogTitle>Are you sure you want to exit xPro?</AlertDialogTitle>
-        {/* <AlertDialogDescription>
-          Möchtest du die App wirklich beenden?
-        </AlertDialogDescription> */}
         <AlertDialogFooter>
           <AlertDialogCancel
             autoFocus
@@ -24,18 +20,19 @@ export function ExitDialog({ open, onCancel, onExit }: { open: boolean; onCancel
             className="btn"
             onClick={onCancel}
           >
-            Abbrechen
+            Cancel
           </AlertDialogCancel>
           <AlertDialogAction
             data-focusable-popup
             tabIndex={0}
             className="btn"
-            style={
-              { backgroundColor: "#e73838", color: "white" }
-            }
+            style={{
+              backgroundColor: "#e73838",
+              color: "white"
+            }}
             onClick={onExit}
           >
-            Beenden
+            Exit
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
