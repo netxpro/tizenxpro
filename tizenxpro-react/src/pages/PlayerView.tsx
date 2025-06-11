@@ -83,7 +83,7 @@ export default function PlayerView({
 
   useEffect(() => {
     if (!showControls) return;
-    const timeout = setTimeout(() => setShowControls(false), 5000);
+    const timeout = setTimeout(() => setShowControls(false), 10000);
     return () => clearTimeout(timeout);
   }, [showControls]);
 

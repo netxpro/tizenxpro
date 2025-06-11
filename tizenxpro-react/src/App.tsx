@@ -94,7 +94,7 @@ export default function App() {
             <Route path="/about" element={<About />} />
             <Route
               path="/player/:id"
-              element={<PlayerView settings={settings} />}
+              element={<PlayerView settings={settings} setMode={setMode} />}
             />
           </Routes>
         </main>
