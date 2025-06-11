@@ -14,6 +14,8 @@ declare global {
   }
 }
 
+declare const __APP_VERSION__: string;
+
 export default function About() {
   const [deviceInfo, setDeviceInfo] = useState<any>(null);
 
@@ -39,7 +41,7 @@ export default function About() {
         {deviceInfo ? (
           <>
             <div><b>App Name:</b> {deviceInfo.appName}</div>
-            <div><b>App Version:</b> {import.meta.env.VITE_APP_VERSION}</div>
+            <div><b>App Version:</b> {__APP_VERSION__}</div>
             {/* <div><b>Device ID:</b> {deviceInfo.deviceId}</div> */}
             {deviceInfo.screen && (
               <div>

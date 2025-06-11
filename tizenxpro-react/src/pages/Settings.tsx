@@ -19,7 +19,7 @@ export default function Settings({ settings, setSettings }: {
   }, []);
 
   const currentPlatform = platforms.find((p: any) => p.id === settings.platform);
-  const orientationOptions = currentPlatform?.settings?.orientation ?? [];
+  const orientationOptions = currentPlatform?.settings?.orientation ?? ["straight"];
 
   const orientationLabel: Record<string, string> = {
     straight: "Straight",

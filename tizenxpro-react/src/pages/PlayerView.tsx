@@ -6,7 +6,6 @@ import { Progress } from "@/components/ui/progress";
 import { Play, Pause } from "lucide-react";
 import type { NavigationMode } from "@/types/navigationMode";
 import { getApiUrl } from "@/utils/apiUrl";
-import Hls from "hls.js";
 import type { UserSettings } from "@/types/userSettings";
 
 const API_BASE = getApiUrl();
@@ -143,27 +142,36 @@ export default function PlayerView({
     const video = videoRef.current;
 
     if (videoSrc.endsWith(".m3u8")) {
-      if (Hls.isSupported()) {
-        const hls = new Hls({
-          maxBufferLength: 30,
-          maxMaxBufferLength: 60,
-          liveSyncDuration: 10,
-          enableWorker: true,
-        });
-        hls.loadSource(videoSrc);
-        hls.attachMedia(video);
+      // Dynamisch aus public/data/hls.js laden
+      const script = document.createElement("script");
+      script.src = "/data/hls.js";
+      script.async = true;
+      script.onload = () => {
+        // @ts-ignore
+        const Hls = window.Hls;
+        if (Hls && Hls.isSupported()) {
+          const hls = new Hls();
+          hls.loadSource(videoSrc);
+          hls.attachMedia(video);
 
-        hls.on(Hls.Events.ERROR, (data) => {
-          console.error("HLS error:", data);
-        });
+          hls.on(Hls.Events.ERROR, (data: any) => {
+            console.error("HLS error:", data);
+          });
 
-        // Clean up
-        return () => {
-          hls.destroy();
-        };
-      } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
-        video.src = videoSrc;
-      }
+          // Clean up
+          return () => {
+            hls.destroy();
+          };
+        } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
+          video.src = videoSrc;
+        }
+      };
+      document.body.appendChild(script);
+
+      // Clean up Script
+      return () => {
+        document.body.removeChild(script);
+      };
     } else {
       video.src = videoSrc;
     }
