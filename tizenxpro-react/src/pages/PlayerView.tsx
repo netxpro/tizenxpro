@@ -142,7 +142,6 @@ export default function PlayerView({
 
     const video = videoRef.current;
 
-    // Prüfe, ob es ein m3u8 ist
     if (videoSrc.endsWith(".m3u8")) {
       if (Hls.isSupported()) {
         const hls = new Hls({
@@ -154,7 +153,7 @@ export default function PlayerView({
         hls.loadSource(videoSrc);
         hls.attachMedia(video);
 
-        hls.on(Hls.Events.ERROR, (event, data) => {
+        hls.on(Hls.Events.ERROR, (data) => {
           console.error("HLS error:", data);
         });
 
