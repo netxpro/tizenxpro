@@ -106,12 +106,12 @@ Adjust this path to match your backend server (especially for deployment to real
 
 The backend is a **separate project**. Clone and run it:
 
-🔗 [GitHub: tizenxpro-backend](https://github.com/propani/tizenxpro-backend)
+🔗 [GitHub: tizenxpro-backend](https://github.com/netxpro/tizenxpro-backend)
 
 ### Run it locally:
 
 ```bash
-git clone https://github.com/propani/tizenxpro-backend.git
+git clone https://github.com/netxpro/tizenxpro-backend.git
 cd tizenxpro-backend
 npm install
 npm start   # Default: http://0.0.0.0:3001

@@ -15,13 +15,13 @@ import VideoCard from "@/components/VideoCard";
 import { getApiUrl } from "@/utils/apiUrl";
 import type { UserSettings } from "@/types/userSettings";
 
-
 export default function Home({ settings }: { settings: UserSettings }) {
-  const [apiPage, setApiPage] = useState(1); // API page (Backend)
-  const [localPage, setLocalPage] = useState(1);
+  // State for API and local pagination
+  const [apiPage, setApiPage] = useState(1); // Backend page
+  const [localPage, setLocalPage] = useState(1); // Frontend page
   const [videos, setVideos] = useState<Video[]>([]);
   const [loading, setLoading] = useState(false);
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState(1); // For featured pagination
   const [totalPages, setTotalPages] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [isFetchingMore, setIsFetchingMore] = useState(false);
@@ -38,6 +38,7 @@ export default function Home({ settings }: { settings: UserSettings }) {
   const platform = settings.platform;
   const orientation = settings.orientation;
 
+  // Helper to normalize API data
   const handleData = (data: any) => {
     if (Array.isArray(data)) return data;
     if (Array.isArray(data.results)) return data.results;
@@ -53,6 +54,7 @@ export default function Home({ settings }: { settings: UserSettings }) {
     return [];
   };
 
+  // Load featured videos if no category or query is set
   useEffect(() => {
     if (!category && !query) {
       setLoading(true);
@@ -72,11 +74,13 @@ export default function Home({ settings }: { settings: UserSettings }) {
       return;
     }
 
+    // Reset state when category or query changes
     setVideos([]);
     setPage(1);
     setHasMore(true);
   }, [category, query, settings, platform, orientation]);
 
+  // Load videos for category or search
   useEffect(() => {
     if (!category && !query) return;
     setLoading(true);
@@ -97,6 +101,7 @@ export default function Home({ settings }: { settings: UserSettings }) {
       .finally(() => setLoading(false));
   }, [category, query, apiPage, settings, platform, orientation]);
 
+  // Load more videos for infinite scroll or button
   const loadMore = () => {
     if (pagedVideos.length < videos.length) {
       setLocalPage((lp) => lp + 1);
@@ -107,6 +112,7 @@ export default function Home({ settings }: { settings: UserSettings }) {
     }
   };
 
+  // Infinite scroll: load more when near bottom
   useEffect(() => {
     if (!category && !query) return;
     const handleScroll = () => {
@@ -120,6 +126,7 @@ export default function Home({ settings }: { settings: UserSettings }) {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [category, query, page, hasMore, isFetchingMore]);
 
+  // Keyboard navigation: load more on ArrowDown at end
   useEffect(() => {
     if (!category && !query) return;
     const handler = (e: KeyboardEvent) => {
@@ -138,12 +145,14 @@ export default function Home({ settings }: { settings: UserSettings }) {
     return () => window.removeEventListener("keydown", handler);
   }, [videos, hasMore, isFetchingMore, category, query]);
 
+  // Calculate paged videos for current view
   const pagedVideos = videos.slice(0, localPage * pageSize);
   const featuredPagedVideos = videos.slice(
     (page - 1) * pageSize,
     page * pageSize
   );
 
+  // Helper for pagination range (with ellipsis)
   function getPaginationRange(page: number, totalPages: number, delta = 3) {
     const range = [];
     const left = Math.max(2, page - delta);
@@ -162,6 +171,7 @@ export default function Home({ settings }: { settings: UserSettings }) {
     return range;
   }
 
+  // Pagination range for featured or search/category
   const paginationRange = (!category && !query)
     ? getPaginationRange(page, Math.ceil(videos.length / pageSize))
     : getPaginationRange(page, totalPages);
@@ -171,18 +181,22 @@ export default function Home({ settings }: { settings: UserSettings }) {
       className="p-4 flex flex-col items-center"
       style={{ minHeight: "100vh" }}
     >
+      {/* Video grid */}
       <div
         className="grid w-full max-w-10xl gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5"
         ref={gridRef}
       >
         {loading ? (
+          // Show skeletons while loading
           Array.from({ length: pageSize }).map((_, i) => <VideoCardSkeleton key={i} />)
         ) : pagedVideos.length === 0 ? (
+          // Show message if no videos found
           <div className="col-span-4 text-center text-muted-foreground py-12">
-            KNo videos found.
+            No videos found.
           </div>
         ) : (
           <Suspense fallback={null}>
+            {/* Featured: use featuredPagedVideos, else pagedVideos */}
             {!category && !query
               ? featuredPagedVideos.map((video) => (
                   <VideoCard key={video.id} video={video} />
@@ -190,7 +204,7 @@ export default function Home({ settings }: { settings: UserSettings }) {
               : pagedVideos.map((video) => (
                   <VideoCard key={video.id} video={video} />
                 ))}
-            {/* "Load More"-Indikator */}
+            {/* "Load More" indicator for infinite scroll */}
             {(category || query) && hasMore && (
               <div className="col-span-full flex justify-center py-4">
                 {isFetchingMore ? (
@@ -210,7 +224,7 @@ export default function Home({ settings }: { settings: UserSettings }) {
           </Suspense>
         )}
       </div>
-      {/* Pagination */}
+      {/* Pagination for featured */}
       {!category && !query && (
         <Pagination className="mt-8">
           <PaginationContent>
@@ -273,10 +287,10 @@ export default function Home({ settings }: { settings: UserSettings }) {
         </Pagination>
       )}
 
-      {/* "load more" Pagination */}
+      {/* "Load more" and pagination for search/category */}
       {(category || query) && (
         <>
-          {/* "load more" */}
+          {/* "Load more" button for local paging */}
           {pagedVideos.length < videos.length && (
             <div className="col-span-full flex justify-center py-4">
               {isFetchingMore ? (
@@ -292,7 +306,7 @@ export default function Home({ settings }: { settings: UserSettings }) {
             </div>
           )}
 
-          {/* Pagination only display if all videos are loaded */}
+          {/* Pagination if all videos are loaded */}
           {pagedVideos.length >= videos.length && totalPages > 1 && (
             <Pagination className="mt-8">
               <PaginationContent>
