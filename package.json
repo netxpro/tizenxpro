@@ -1,6 +1,6 @@
 {
   "name": "tizenxpro-tv-build",
-  "version": "0.1.0",
+  "version": "0.1.21",
   "description": "tizenxpro for Samsung Smart TV (Tizen)",
   "repository": {
     "type": "git",

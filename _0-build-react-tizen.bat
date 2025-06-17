@@ -1,6 +1,4 @@
 @echo off
-REM Create www folder
-mkdir www
 
 REM Check if node_modules folder exists, if not run npm install in new window
 if not exist "node_modules" (
@@ -22,9 +20,22 @@ if exist ".buildResult" (
     rmdir /s /q ".buildResult"
 )
 
+REM npm run build tizenxpro-react
+echo Running npm run build in tizenxpro-react ...
+pushd tizenxpro-react
+start /wait cmd /c "npm run build"
+if errorlevel 1 (
+    echo npm run build failed.
+    echo Press any key to exit...
+    pause
+    popd
+    exit /b 1
+)
+popd
+
 REM Run tizen build-web with exclusions in new window, close after done
 echo Starting tizen build-web ...
-start /wait cmd /c "tizen build-web -e ".*" -e "*.bat" -e "gulpfile.babel.js" -e "tizenxpro-react/*" -e "README.md" -e "node_modules/*" -e "package*.json" -e "yarn.lock" -e "www/*""
+start /wait cmd /c "tizen build-web -e ".*" -e "*.bat" -e "gulpfile.babel.js" -e "tizenxpro-react/*" -e "README.md" -e "node_modules/*" -e "package*.json" -e "yarn.lock""
 if errorlevel 1 (
     echo Error during tizen build-web.
     echo Press any key to exit...
@@ -33,9 +44,6 @@ if errorlevel 1 (
 )
 
 echo Build-web finished.
-
-REM Create .buildResult folder
-mkdir .buildResult
 
 REM Copy contents of www (files and folders) into .buildResult
 echo Copying contents from www to .buildResult ...

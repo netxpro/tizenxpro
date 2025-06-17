@@ -12,7 +12,7 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import VideoCard from "@/components/VideoCard";
-import { getApiUrl } from "@/utils/apiUrl";
+import { getApiUrl } from "@/components/get";
 import type { UserSettings } from "@/types/userSettings";
 
 export default function Home({ settings }: { settings: UserSettings }) {

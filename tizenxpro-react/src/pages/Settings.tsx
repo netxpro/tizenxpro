@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getApiUrl } from "@/utils/apiUrl";
+import { getApiUrl } from "@/components/get";
 import type { UserSettings } from "@/types/userSettings";
 
 export default function Settings({ settings, setSettings }: {

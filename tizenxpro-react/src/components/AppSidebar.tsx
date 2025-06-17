@@ -4,7 +4,7 @@ import {
 import { Home, Layers, Settings, Search, Info } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { getApiUrl } from "@/utils/apiUrl";
+import { getApiUrl } from "@/components/get";
 
 const items = [
   { title: "Home", url: "/", icon: Home },

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import type { UserSettings } from "@/types/userSettings";
-import { getApiUrl } from "@/utils/apiUrl";
+import { getApiUrl } from "@/components/get";
 
 interface Category {
   id: string;
