@@ -2,6 +2,9 @@ import { Button } from "@/components/ui/button";
 // import { Play, Pause } from "lucide-react";
 import type { VideoSource, Subtitle } from "@/types/playerTypes";
 import { useEffect, useState } from "react";
+import { proxify } from "./playerUtils";
+import type { UserSettings } from "@/types/userSettings";
+
 
 type Props = {
   isPlaying: boolean;
@@ -18,6 +21,7 @@ type Props = {
   showSubtitleMenu: boolean;
   setShowSubtitleMenu: (v: boolean) => void;
   formatTime: (t: number) => string;
+  settings: UserSettings;
 };
 
 export default function PlayerControls({
@@ -35,6 +39,7 @@ export default function PlayerControls({
   showSubtitleMenu,
   setShowSubtitleMenu,
   formatTime,
+  settings,
 }: Props) {
   const [buffered, setBuffered] = useState(0);
 
@@ -76,7 +81,10 @@ export default function PlayerControls({
                     key={sub.lang}
                     className={`px-6 py-3 cursor-pointer hover:bg-orange-100 ${selectedSubtitle?.lang === sub.lang ? "bg-orange-200" : ""}`}
                     onClick={() => {
-                      setSelectedSubtitle(sub);
+                      setSelectedSubtitle({
+                        ...sub,
+                        url: proxify(settings, sub.url)
+                      });
                       setShowSubtitleMenu(false);
                     }}
                   >

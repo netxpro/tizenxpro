@@ -15,10 +15,11 @@ export default function Categories({ settings }: { settings: UserSettings }) {
   const [categories, setCategories] = useState<Category[]>([]);
   const navigate = useNavigate();
   const platform = settings.platform;
+  const orientation = settings.orientation;
   const API_BASE = getApiUrl();
 
   useEffect(() => {
-    fetch(`${API_BASE}/${platform}/categories`)
+    fetch(`${API_BASE}/${platform}/categories?orientation=${orientation || ""}`)
       .then(res => res.json())
       .then(data => setCategories(Array.isArray(data.categories) ? data.categories : []))
       .catch(() => setCategories([]));

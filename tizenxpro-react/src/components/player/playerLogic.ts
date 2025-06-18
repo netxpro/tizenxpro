@@ -35,9 +35,6 @@ export function usePlayerLogic(
   const [showQualityMenu, setShowQualityMenu] = useState(false);
   const [showSubtitleMenu, setShowSubtitleMenu] = useState(false);
 
-  // ASS.js instance ref for cleanup
-  const assInstance = useRef<any>(null);
-
   // Load video and subtitle sources on mount or when id/location changes
   useEffect(() => {
     const loadVideo = async () => {
@@ -64,10 +61,11 @@ export function usePlayerLogic(
 
         setVideoSources(videoArr.map((src: VideoSource) => ({ ...src, url: src.url })));
         setSubtitles(subtitlesArr.map((sub: Subtitle) => ({ ...sub, url: sub.url })));
-
+        // console.log("Video sources:", videoArr);
+        console.log("Subtitles:", subtitlesArr);
         if (videoArr.length > 0) {
           setSelectedSource(videoArr[0]);
-          setVideoSrc(proxify(API_BASE, platform, videoArr[0].source, videoArr[0].url));
+          setVideoSrc(proxify(settings, videoArr[0].url));
         } else {
           setVideoSrc(null);
         }
@@ -76,9 +74,10 @@ export function usePlayerLogic(
           const enSub = subtitlesArr.find((s: Subtitle) => s.lang === "en");
           const subtitleObj = enSub || subtitlesArr[0];
           if (subtitleObj) {
+            console.log("Selected subtitle:", subtitleObj);
             setSelectedSubtitle({
               ...subtitleObj,
-              url: proxify(API_BASE, platform, subtitleObj.source, subtitleObj.url)
+              url: proxify(settings, subtitleObj.url)
             });
           }
         }
@@ -239,7 +238,7 @@ export function usePlayerLogic(
     if (videoRef.current) {
       const current = videoRef.current.currentTime;
       setSelectedSource(src);
-      setVideoSrc(proxify(API_BASE, platform, src.source, src.url));
+      setVideoSrc(proxify(settings, src.url));
       setTimeout(() => {
         if (videoRef.current) {
           videoRef.current.currentTime = current;
@@ -249,57 +248,11 @@ export function usePlayerLogic(
     }
   }
 
-  // ASS.js subtitle overlay logic
-  useEffect(() => {
-    if (assInstance.current) {
-      assInstance.current.destroy();
-      assInstance.current = null;
-    }
-
-    if (
-      selectedSubtitle &&
-      selectedSubtitle.url &&
-      selectedSubtitle.url.endsWith(".ass") &&
-      videoRef.current
-    ) {
-      const loadAss = async () => {
-        // @ts-ignore
-        const ASS = window.ASS;
-        if (!ASS) {
-          const script = document.createElement("script");
-          script.src = "/data/ass.global.min.js";
-          script.async = true;
-          script.onload = () => loadAss();
-          document.body.appendChild(script);
-          return;
-        }
-        const content = await fetch(selectedSubtitle.url).then((res) => res.text());
-        // Ersetze alle Fontnamen durch "Open Sans-Bold"
-        const patchedContent = content.replace(/Style: ([^,]+),[^,]+/g, (_, p1) => `Style: ${p1},OpenSans Bold`);
-        assInstance.current = new ASS(patchedContent, videoRef.current, {
-          container: document.getElementById("ass-container"),
-          resampling: "video_height",
-          fonts: [
-            "/fonts/OpenSans-Bold.ttf"
-          ],
-          fallbackFont: "OpenSans Bold",
-        });
-      };
-      loadAss();
-    }
-    return () => {
-      if (assInstance.current) {
-        assInstance.current.destroy();
-        assInstance.current = null;
-      }
-    };
-  }, [selectedSubtitle, videoSrc]);
-
   // Activate .vtt subtitles programmatically (for custom controls)
   useEffect(() => {
     if (
       selectedSubtitle &&
-      selectedSubtitle.url.includes(".vtt") &&
+      // selectedSubtitle.url.includes(".vtt") &&
       videoRef.current
     ) {
       const video = videoRef.current;
@@ -315,6 +268,7 @@ export function usePlayerLogic(
             track.mode = "disabled";
           }
         }
+        console.log(selectedSubtitle);
       }, 500);
     }
   }, [selectedSubtitle, videoSrc]);

@@ -3,6 +3,22 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+  font-family: 'Open Sans';
+  src: url('/fonts/OpenSans-Regular.ttf') format('truetype');
+  font-weight: 400;
+}
+@font-face {
+  font-family: 'Open Sans';
+  src: url('/fonts/OpenSans-Bold.ttf') format('truetype');
+  font-weight: 700;
+}
+@font-face {
+  font-family: 'Figtree';
+  src: url('/fonts/Figtree-Regular.ttf') format('truetype');
+  font-weight: 400;
+}
+
 .dark {
   --background: #23272f;
   --foreground: #fff;
@@ -228,6 +244,29 @@
 .text-orange-500 {
   color: orange !important;
 }
-.bg-orange-50 {
-  /* background: #fff7ed !important; */
+
+.subtitle-overlay {
+  position: absolute;
+  bottom: 8%;
+  width: 100%;
+  text-align: center;
+  color: #fff;
+  font-family: 'Open Sans', 'Figtree', Arial, sans-serif;
+  font-weight: 700;
+  font-size: clamp(18px, 2.5vw, 36px);
+  letter-spacing: 0.03em;
+  line-height: 1.4;
+  text-shadow:
+    0 0 4px rgba(0, 0, 0, 0.9),
+    0 0 10px rgba(0, 0, 0, 0.7),
+    2px 2px 2px rgba(0, 0, 0, 1),
+    -2px -2px 2px rgba(0, 0, 0, 1);
+  padding: 0.2em 0.5em;
+  border-radius: 0.5em;
+  pointer-events: none;
+  z-index: 999;
+  user-select: none;
+  box-sizing: border-box;
+  white-space: pre-wrap;
+  word-break: break-word;
 }

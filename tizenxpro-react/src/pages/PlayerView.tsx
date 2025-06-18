@@ -138,6 +138,7 @@ export default function PlayerView({
           showSubtitleMenu={player.showSubtitleMenu}
           setShowSubtitleMenu={player.setShowSubtitleMenu}
           formatTime={player.formatTime}
+          settings={settings}
         />
       )}
     </div>
